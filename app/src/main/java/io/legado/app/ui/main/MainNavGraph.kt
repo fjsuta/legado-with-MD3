@@ -160,7 +160,6 @@ fun MainActivity.mainEntryProvider(
             onNavigateToTheme = { backStack.add(MainRouteSettingsTheme) },
             onNavigateToBackup = { backStack.add(MainRouteSettingsBackup) },
             onNavigateToDownloadCache = { backStack.add(MainRouteSettingsDownloadCache) },
-            onNavigateToTranslation = { backStack.add(MainRouteSettingsTranslation) },
             onNavigateToLab = { backStack.add(MainRouteSettingsLabConfig) }
         )
     }
@@ -198,7 +197,10 @@ fun MainActivity.mainEntryProvider(
     }
 
     entry<MainRouteSettingsLabConfig> {
-        LabConfigScreen(onBackClick = { onNavigateBack() })
+        LabConfigScreen(
+            onBackClick = { onNavigateBack() },
+            onNavigateToTranslation = { backStack.add(MainRouteSettingsTranslation) }
+        )
     }
 
     entry<MainRouteSettingsCustomTheme> {

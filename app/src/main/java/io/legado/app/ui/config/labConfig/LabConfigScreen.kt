@@ -18,6 +18,7 @@ import io.legado.app.ui.theme.LegadoTheme
 import io.legado.app.ui.theme.adaptiveContentPadding
 import io.legado.app.ui.widget.components.AppScaffold
 import io.legado.app.ui.widget.components.SplicedColumnGroup
+import io.legado.app.ui.widget.components.settingItem.ClickableSettingItem
 import io.legado.app.ui.widget.components.settingItem.SwitchSettingItem
 import io.legado.app.ui.widget.components.topbar.GlassMediumFlexibleTopAppBar
 import io.legado.app.ui.widget.components.topbar.GlassTopAppBarDefaults
@@ -26,7 +27,8 @@ import io.legado.app.ui.widget.components.topbar.TopBarNavigationButton
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LabConfigScreen(
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    onNavigateToTranslation: () -> Unit
 ) {
     val scrollBehavior = GlassTopAppBarDefaults.defaultScrollBehavior()
 
@@ -100,6 +102,15 @@ fun LabConfigScreen(
                                     .padding(horizontal = 16.dp, vertical = 4.dp)
                             )
                         }
+                    }
+                }
+
+                AnimatedVisibility(visible = LabConfig.labEnabled) {
+                    SplicedColumnGroup {
+                        ClickableSettingItem(
+                            title = stringResource(R.string.translation_config),
+                            onClick = onNavigateToTranslation
+                        )
                     }
                 }
             }
