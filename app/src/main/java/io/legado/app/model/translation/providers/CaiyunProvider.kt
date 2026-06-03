@@ -33,12 +33,17 @@ object CaiyunProvider : TranslationProvider {
     override suspend fun translate(
         config: ProviderConfigData,
         text: String,
+        sourceLang: String,
         targetLang: String
     ): Result<String> = runCatching {
+        if (text.isBlank()) return@runCatching text
         val token = config.field("token")
         require(token.isNotBlank()) { "token 未填写" }
         val caiyunLang = LanguageCodes.toCaiyun(targetLang)
-        val from = "auto"
+        if (caiyunLang == targetLang && targetLang !in setOf("zh", "en", "ja", "ko")) {
+            throw RuntimeException("彩云小译暂不支持目标语言 $targetLang")
+        }
+        val from = if (sourceLang.isBlank()) "auto" else LanguageCodes.toCaiyun(sourceLang)
         val transType = "${from}2${caiyunLang}"
         val body = mapOf(
             "source" to listOf(text),

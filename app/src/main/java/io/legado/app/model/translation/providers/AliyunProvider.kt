@@ -49,13 +49,16 @@ object AliyunProvider : TranslationProvider {
     override suspend fun translate(
         config: ProviderConfigData,
         text: String,
+        sourceLang: String,
         targetLang: String
     ): Result<String> = runCatching {
+        if (text.isBlank()) return@runCatching text
         val ak = config.field("accessKeyId")
         val sk = config.field("accessKeySecret")
         val scene = config.field("scene").ifBlank { "general" }
         require(ak.isNotBlank()) { "AccessKeyId 未填写" }
         require(sk.isNotBlank()) { "AccessKeySecret 未填写" }
+        val src = if (sourceLang.isBlank()) "auto" else sourceLang
         val params = linkedMapOf<String, String>(
             "Action" to "TranslateGeneral",
             "Format" to "JSON",
@@ -68,7 +71,7 @@ object AliyunProvider : TranslationProvider {
             "Timestamp" to Instant.now().atOffset(ZoneOffset.UTC)
                 .format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")),
             "SourceText" to text,
-            "SourceLanguage" to "auto",
+            "SourceLanguage" to src,
             "TargetLanguage" to targetLang,
             "Scene" to scene
         )

@@ -92,7 +92,7 @@ class TranslateChapterUseCase : KoinComponent {
                         semaphore.withPermit {
                             if (assembler.hasResult(idx)) return@async
                             rateLimiter.acquire()
-                            val result = provider.translate(config, chunk.text, targetLanguage)
+                            val result = provider.translate(config, chunk.text, "", targetLanguage)
                             result.onSuccess { translated ->
                                 assembler.setResult(idx, translated)
                                 translationCacheGateway.saveChunk(

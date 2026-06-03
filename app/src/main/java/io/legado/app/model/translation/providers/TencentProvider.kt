@@ -28,13 +28,15 @@ object TencentProvider : TranslationProvider {
     override suspend fun translate(
         config: ProviderConfigData,
         text: String,
+        sourceLang: String,
         targetLang: String
     ): Result<String> = runCatching {
+        if (text.isBlank()) return@runCatching text
         val sid = config.field("secretId")
         val skey = config.field("secretKey")
         require(sid.isNotBlank()) { "SecretId 未填写" }
         require(skey.isNotBlank()) { "SecretKey 未填写" }
-        val source = "auto"
+        val source = if (sourceLang.isBlank()) "auto" else LanguageCodes.toTencent(sourceLang)
         val target = LanguageCodes.toTencent(targetLang)
         val body = mapOf(
             "SourceText" to text,

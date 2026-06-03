@@ -62,9 +62,18 @@ interface TranslationProvider {
     /** 是否在配置页底部追加 rateLimit/maxChars/maxParas 三个通用字段 */
     val showUniversalFields: Boolean get() = true
 
+    /**
+     * 执行翻译。
+     *
+     * @param config 当前实例的字段配置
+     * @param text 待翻译文本
+     * @param sourceLang 源语言代码,空字符串表示自动检测
+     * @param targetLang 目标语言代码
+     */
     suspend fun translate(
         config: ProviderConfigData,
         text: String,
+        sourceLang: String,
         targetLang: String
     ): Result<String>
 }

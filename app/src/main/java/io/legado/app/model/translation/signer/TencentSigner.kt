@@ -28,7 +28,7 @@ object TencentSigner {
 
         val canonicalHeaders = "content-type:application/json; charset=utf-8\n" +
             "host:$host\n" +
-            "x-tc-action:${action.toLowerCase()}\n"
+            "x-tc-action:${action.lowercase()}\n"
         val signedHeaders = "content-type;host;x-tc-action"
 
         val payloadHash = sha256Hex(payload)

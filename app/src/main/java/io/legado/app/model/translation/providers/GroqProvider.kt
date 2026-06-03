@@ -30,8 +30,10 @@ object GroqProvider : TranslationProvider {
     override suspend fun translate(
         config: ProviderConfigData,
         text: String,
+        sourceLang: String,
         targetLang: String
     ): Result<String> = runCatching {
+        if (text.isBlank()) return@runCatching text
         val apiKey = config.field("apiKey")
         val model = config.field("model").ifBlank { "llama-3.1-70b-versatile" }
         val baseUrl = config.field("baseUrl").ifBlank { "https://api.groq.com/openai/v1" }
@@ -41,7 +43,7 @@ object GroqProvider : TranslationProvider {
             "model" to model,
             "messages" to listOf(
                 mapOf("role" to "system", "content" to "You are a translation assistant. " +
-                    "Translate the following text into the target language and output only the translation."),
+                    "Translate the following text into $targetLang and output only the translation."),
                 mapOf("role" to "user", "content" to text)
             ),
             "temperature" to 0.3

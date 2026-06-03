@@ -32,7 +32,6 @@ fun FieldInputRow(
     modifier: Modifier = Modifier
 ) {
     var showPassword by remember { mutableStateOf(false) }
-    val effective = value.ifEmpty { field.default.orEmpty() }
     val isPassword = field.type == FieldType.PASSWORD
 
     Column(modifier = modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 6.dp)) {
@@ -48,12 +47,13 @@ fun FieldInputRow(
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
+        // 直接绑定 value,允许用户清空输入框。placeholder 显示在空值时作为提示。
         OutlinedTextField(
-            value = effective,
+            value = value,
             onValueChange = onValueChange,
             singleLine = true,
             modifier = Modifier.fillMaxWidth().padding(top = 4.dp),
-            placeholder = { Text(field.placeholder) },
+            placeholder = { Text(field.default ?: field.placeholder) },
             visualTransformation = if (isPassword && !showPassword) PasswordVisualTransformation() else VisualTransformation.None,
             keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(
                 keyboardType = if (field.type == FieldType.NUMBER) KeyboardType.Number else KeyboardType.Text

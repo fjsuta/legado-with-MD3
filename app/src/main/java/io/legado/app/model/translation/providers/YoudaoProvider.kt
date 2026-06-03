@@ -27,15 +27,17 @@ object YoudaoProvider : TranslationProvider {
     override suspend fun translate(
         config: ProviderConfigData,
         text: String,
+        sourceLang: String,
         targetLang: String
     ): Result<String> = runCatching {
+        if (text.isBlank()) return@runCatching text
         val appKey = config.field("appKey")
         val appSecret = config.field("appSecret")
         require(appKey.isNotBlank()) { "appKey 未填写" }
         require(appSecret.isNotBlank()) { "appSecret 未填写" }
         val salt = YoudaoSigner.randomSalt()
         val curtime = YoudaoSigner.currentTime()
-        val from = "auto"
+        val from = if (sourceLang.isBlank()) "auto" else LanguageCodes.toYoudao(sourceLang)
         val to = LanguageCodes.toYoudao(targetLang)
         val sign = YoudaoSigner.sign(appKey, text, salt, curtime, appSecret)
         val encodedQ = java.net.URLEncoder.encode(text, "UTF-8")

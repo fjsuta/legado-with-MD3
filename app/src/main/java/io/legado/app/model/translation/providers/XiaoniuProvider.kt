@@ -31,11 +31,13 @@ object XiaoniuProvider : TranslationProvider {
     override suspend fun translate(
         config: ProviderConfigData,
         text: String,
+        sourceLang: String,
         targetLang: String
     ): Result<String> = runCatching {
+        if (text.isBlank()) return@runCatching text
         val apiKey = config.field("apiKey")
         require(apiKey.isNotBlank()) { "API Key 未填写" }
-        val from = "auto"
+        val from = if (sourceLang.isBlank()) "auto" else sourceLang
         val to = targetLang
         val encoded = java.net.URLEncoder.encode(text, "UTF-8")
         val url = "https://api.niutrans.com/NiuTransServer/translation" +

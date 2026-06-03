@@ -45,8 +45,10 @@ object AzureProvider : TranslationProvider {
     override suspend fun translate(
         config: ProviderConfigData,
         text: String,
+        sourceLang: String,
         targetLang: String
     ): Result<String> = runCatching {
+        if (text.isBlank()) return@runCatching text
         val region = config.field("region")
         val apiKey = config.field("apiKey")
         val baseUrl = config.field("baseUrl")
@@ -54,8 +56,12 @@ object AzureProvider : TranslationProvider {
             .trimEnd('/')
         require(region.isNotBlank()) { "region 未填写" }
         require(apiKey.isNotBlank()) { "API Key 未填写" }
+        val from = if (sourceLang.isBlank()) "" else LanguageCodes.toAzure(sourceLang)
         val to = LanguageCodes.toAzure(targetLang)
-        val url = "$baseUrl/translate?api-version=3.0&to=$to"
+        val url = buildString {
+            append(baseUrl).append("/translate?api-version=3.0&to=$to")
+            if (from.isNotEmpty()) append("&from=$from")
+        }
         val textValue = if (config.field("enableRichText") == "true") {
             // 富文本模式:Azure 默认就传 <>,= 等字符,无需额外处理
             text

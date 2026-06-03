@@ -57,13 +57,13 @@ object TranslationConfig {
 
     val targetLanguages = listOf(
         "zh" to "简体中文",
+        "zh-Hant" to "繁體中文",
         "en" to "English",
         "ja" to "日本語",
         "ko" to "한국어",
         "fr" to "Français",
         "de" to "Deutsch",
         "es" to "Español",
-        "ru" to "Русский",
-        "ar" to "العربية"
+        "ru" to "Русский"
     )
 }

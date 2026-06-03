@@ -5,11 +5,10 @@ import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
 
 /**
- * 火山引擎(字节跳动)机器翻译签名
+ * 火山引擎(字节跳动)机器翻译签名 V4
  *
  * 服务名:translate
  * 区域:cn-north-1
- * 签名算法:Volcengine 签名
  * 文档:https://www.volcengine.com/docs/4640/65007
  */
 object VolcanoSigner {
@@ -18,8 +17,9 @@ object VolcanoSigner {
         accessKeyId: String,
         accessKeySecret: String,
         method: String = "POST",
-        host: String = "open.volcengineapi.com",
+        host: String = "translate.volcengineapi.com",
         path: String = "/",
+        query: String = "",
         body: String
     ): Map<String, String> {
         val region = "cn-north-1"
@@ -30,17 +30,13 @@ object VolcanoSigner {
             .format(java.time.format.DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss'Z'"))
         val shortDate = date.substring(0, 8)
 
-        val headers = linkedMapOf(
-            "X-Date" to date,
-            "Host" to host,
-            "Content-Type" to "application/json"
-        )
-
-        val canonicalHeaders = "$shortDate\n$region\n$service\n"
-        val signedHeaders = "x-date"
+        // canonical_headers 必须是 host:xxx\nx-date:xxx\n,header 名小写、字典序、值去首尾空格
+        val canonicalHeaders = "host:$host\nx-date:$date\n"
+        val signedHeaders = "host;x-date"
         val bodyHash = sha256Hex(body)
 
-        val canonicalRequest = "$method\n$path\n\n$canonicalHeaders\n$signedHeaders\n$bodyHash"
+        // CanonicalRequest: method\npath\nquery\ncanonicalHeaders\nsignedHeaders\nbodyHash
+        val canonicalRequest = "$method\n$path\n$query\n$canonicalHeaders\n$signedHeaders\n$bodyHash"
         val credentialScope = "$shortDate/$region/$service/request"
         val stringToSign = "HMAC-SHA256\n$date\n$credentialScope\n${sha256Hex(canonicalRequest)}"
 
@@ -50,9 +46,15 @@ object VolcanoSigner {
         val kSigning = hmac(kService, "request")
         val signature = hmac(kSigning, stringToSign).toHex()
 
-        val auth = "HMAC-SHA256 Credential=$accessKeyId/$credentialScope, SignedHeaders=$signedHeaders, Signature=$signature"
-        headers["Authorization"] = auth
-        return headers
+        val auth = "HMAC-SHA256 Credential=$accessKeyId/$credentialScope, " +
+            "SignedHeaders=$signedHeaders, Signature=$signature"
+
+        return linkedMapOf(
+            "X-Date" to date,
+            "Host" to host,
+            "Content-Type" to "application/json",
+            "Authorization" to auth
+        )
     }
 
     private fun sha256Hex(s: String): String {
