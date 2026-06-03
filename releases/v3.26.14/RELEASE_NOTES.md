@@ -2,7 +2,7 @@
 
 > 发布时间: 2026-06-03
 > Git tag: `v3.26.14`
-> Commit:  `d52858a6`
+> Commit:  `80c6deb4e`
 
 ## 更新内容
 
@@ -54,15 +54,28 @@
 15. **displayName/description 一致性** — `override val name` 应为 `displayName`
 16. **UI 不响应 providerConfigs 变化** — `TranslationConfigOptions` 订阅 LiveEventBus
 17. **refreshActiveProvider 阻塞主线程** — 改用 `viewModelScope + Dispatchers.IO`
+18. **ProviderConfigViewModel.test() 阻塞主线程** — UI 从 Main 调度器调用 test() 直接 runCatching,Provider 内部大多同步调 OkHttp,改用 `withContext(Dispatchers.IO)` 切到 IO 线程
 
 ### 改进
-18. **LanguageCodes 漏 zh-Hant 映射** — 补全百度 `cht`、有道 `zh-CHT`、Azure `zh-Hant`、腾讯 `zh-TW`、彩云降级、Groq `Traditional Chinese`
-19. **LanguageCodes.toYoudao 漏 ko/fr/de** — 已补全
+19. **LanguageCodes 漏 zh-Hant 映射** — 补全百度 `cht`、有道 `zh-CHT`、Azure `zh-Hant`、腾讯 `zh-TW`、彩云降级、Groq `Traditional Chinese`
+20. **LanguageCodes.toYoudao 漏 ko/fr/de** — 已补全
+
+## 版本号
+
+```
+VERSION_MAJOR=3
+VERSION_MINOR=26
+VERSION_PATCH=14
+VERSION_SUFFIX=0    # 0 = Release,1 = Pre
+```
+
+应用版本号: **3.26.14** (Release)
 
 ## 下载
 
-- **源代码 zip**: `releases/v3.26.14/source.zip` (8.5 MB,基于 `d52858a6`)
+- **源代码 zip**: `releases/v3.26.14/source.zip` (~16 MB,基于 `80c6deb4e`)
 - GitHub 上 checkout tag: `git checkout v3.26.14`
+- 构建工作流: `.github/workflows/build-apk-for-user.yml`
 
 ## 本地构建
 
@@ -76,6 +89,8 @@
 ## 提交记录
 
 ```
+80c6deb4e fix: 测试服务功能改用 IO 调度器避免阻塞主线程
+893c6688e chore: 添加 v3.26.14 release artifacts
 fce133e27 chore: 翻译系统 v3.26.14 release - 补充 zh-Hant/UI 响应式/版本号
 cbdc7d0c3 fix: 修复翻译系统多个严重 BUG
 76843aa51 fix: 修复翻译 Provider 配置的 viewModel 工厂与常量引用
