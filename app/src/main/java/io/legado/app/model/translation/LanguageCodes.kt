@@ -2,12 +2,11 @@ package io.legado.app.model.translation
 
 /**
  * 统一的目标语言代码 -> 各服务实际使用的代码
- *
- * 用户界面语言代码: zh / en / ja / ko / fr / de / es / ru / ar
  */
 object LanguageCodes {
     val IETF_CODES = listOf(
         "zh" to "zh-CN",
+        "zh-Hant" to "zh-TW",
         "en" to "en",
         "ja" to "ja",
         "ko" to "ko",
@@ -23,6 +22,7 @@ object LanguageCodes {
 
     fun toBaidu(lang: String): String = when (lang) {
         "zh" -> "zh"
+        "zh-Hant" -> "cht"
         "en" -> "en"
         "ja" -> "jp"
         "ko" -> "kor"
@@ -36,16 +36,24 @@ object LanguageCodes {
 
     fun toYoudao(lang: String): String = when (lang) {
         "zh" -> "zh-CHS"
+        "zh-Hant" -> "zh-CHT"
+        "ko" -> "ko"
+        "fr" -> "fr"
+        "de" -> "de"
         else -> lang
     }
 
     fun toAzure(lang: String): String = when (lang) {
         "zh" -> "zh-Hans"
+        "zh-Hant" -> "zh-Hant"
+        "fr" -> "fr"
+        "de" -> "de"
         else -> lang
     }
 
     fun toCaiyun(lang: String): String = when (lang) {
         "zh" -> "zh"
+        "zh-Hant" -> "zh"
         "en" -> "en"
         "ja" -> "ja"
         else -> lang
@@ -53,6 +61,7 @@ object LanguageCodes {
 
     fun toTencent(lang: String): String = when (lang) {
         "zh" -> "zh"
+        "zh-Hant" -> "zh-TW"
         "en" -> "en"
         "ja" -> "ja"
         "ko" -> "ko"
@@ -66,6 +75,7 @@ object LanguageCodes {
 
     fun toGroqName(lang: String): String = when (lang) {
         "zh" -> "Simplified Chinese"
+        "zh-Hant" -> "Traditional Chinese"
         "en" -> "English"
         "ja" -> "Japanese"
         "ko" -> "Korean"
