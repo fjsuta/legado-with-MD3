@@ -1,11 +1,14 @@
 package io.legado.app.model.translation.providers
 
+import io.legado.app.help.http.newCallStrResponse
 import io.legado.app.help.http.okHttpClient
 import io.legado.app.model.translation.FieldType
 import io.legado.app.model.translation.ProviderConfigData
 import io.legado.app.model.translation.ProviderField
 import io.legado.app.model.translation.TranslationProvider
 import io.legado.app.utils.GSON
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.security.MessageDigest
 import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
@@ -51,46 +54,48 @@ object AliyunProvider : TranslationProvider {
         text: String,
         sourceLang: String,
         targetLang: String
-    ): Result<String> = runCatching {
-        if (text.isBlank()) return@runCatching text
-        val ak = config.field("accessKeyId")
-        val sk = config.field("accessKeySecret")
-        val scene = config.field("scene").ifBlank { "general" }
-        require(ak.isNotBlank()) { "AccessKeyId 未填写" }
-        require(sk.isNotBlank()) { "AccessKeySecret 未填写" }
-        val src = if (sourceLang.isBlank()) "auto" else sourceLang
-        val params = linkedMapOf<String, String>(
-            "Action" to "TranslateGeneral",
-            "Format" to "JSON",
-            "Version" to "2018-10-12",
-            "RegionId" to "cn-hangzhou",
-            "AccessKeyId" to ak,
-            "SignatureMethod" to "HMAC-SHA1",
-            "SignatureNonce" to java.util.UUID.randomUUID().toString(),
-            "SignatureVersion" to "1.0",
-            "Timestamp" to Instant.now().atOffset(ZoneOffset.UTC)
-                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")),
-            "SourceText" to text,
-            "SourceLanguage" to src,
-            "TargetLanguage" to targetLang,
-            "Scene" to scene
-        )
-        val sortedQuery = params.toSortedMap().entries.joinToString("&") {
-            "${URLEncoder.encode(it.key, "UTF-8")}=${URLEncoder.encode(it.value, "UTF-8")}"
+    ): Result<String> = withContext(Dispatchers.IO) {
+        runCatching {
+            if (text.isBlank()) return@runCatching text
+            val ak = config.field("accessKeyId")
+            val sk = config.field("accessKeySecret")
+            val scene = config.field("scene").ifBlank { "general" }
+            require(ak.isNotBlank()) { "AccessKeyId 未填写" }
+            require(sk.isNotBlank()) { "AccessKeySecret 未填写" }
+            val src = if (sourceLang.isBlank()) "auto" else sourceLang
+            val params = linkedMapOf<String, String>(
+                "Action" to "TranslateGeneral",
+                "Format" to "JSON",
+                "Version" to "2018-10-12",
+                "RegionId" to "cn-hangzhou",
+                "AccessKeyId" to ak,
+                "SignatureMethod" to "HMAC-SHA1",
+                "SignatureNonce" to java.util.UUID.randomUUID().toString(),
+                "SignatureVersion" to "1.0",
+                "Timestamp" to Instant.now().atOffset(ZoneOffset.UTC)
+                    .format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")),
+                "SourceText" to text,
+                "SourceLanguage" to src,
+                "TargetLanguage" to targetLang,
+                "Scene" to scene
+            )
+            val sortedQuery = params.toSortedMap().entries.joinToString("&") {
+                "${URLEncoder.encode(it.key, "UTF-8")}=${URLEncoder.encode(it.value, "UTF-8")}"
+            }
+            val stringToSign = "GET&" + URLEncoder.encode("/", "UTF-8") + "&" +
+                URLEncoder.encode(sortedQuery, "UTF-8")
+            val signature = hmacSha1("$sk&", stringToSign)
+            val finalUrl = "https://mt.aliyuncs.com/?$sortedQuery&Signature=$signature"
+            val response = okHttpClient.newCallStrResponse { url(finalUrl) }
+            if (!response.isSuccessful()) {
+                throw RuntimeException("HTTP ${response.code()}: ${response.message()}")
+            }
+            val parsed = GSON.fromJson(response.body, Resp::class.java)
+                ?: throw RuntimeException("Empty response")
+            parsed.data?.translated
+                ?: parsed.message?.let { throw RuntimeException("阿里云错误 $it: ${parsed.code ?: ""}") }
+                ?: throw RuntimeException("Empty translation result")
         }
-        val stringToSign = "GET&" + URLEncoder.encode("/", "UTF-8") + "&" +
-            URLEncoder.encode(sortedQuery, "UTF-8")
-        val signature = hmacSha1("$sk&", stringToSign)
-        val finalUrl = "https://mt.aliyuncs.com/?$sortedQuery&Signature=$signature"
-        val response = okHttpClient.newCallStrResponse { url(finalUrl) }
-        if (!response.isSuccessful()) {
-            throw RuntimeException("HTTP ${response.code()}: ${response.message()}")
-        }
-        val parsed = GSON.fromJson(response.body, Resp::class.java)
-            ?: throw RuntimeException("Empty response")
-        parsed.data?.translated
-            ?: parsed.message?.let { throw RuntimeException("阿里云错误 $it: ${parsed.code.getOrNull() ?: ""}") }
-            ?: throw RuntimeException("Empty translation result")
     }
 
     private fun hmacSha1(key: String, data: String): String {
