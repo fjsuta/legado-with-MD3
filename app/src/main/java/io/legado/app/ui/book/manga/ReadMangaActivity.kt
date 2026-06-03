@@ -152,6 +152,7 @@ class ReadMangaActivity : VMBaseActivity<ActivityMangaBinding, ReadMangaViewMode
     private val mLinearInterpolator by lazy {
         LinearInterpolator()
     }
+    private val eyeProtectionRefreshRunnable by lazy { Runnable { refreshEyeProtectionState() } }
 
     private val sourceEditActivity =
         registerForActivityResult(StartActivityContract(BookSourceEditActivity::class.java)) {

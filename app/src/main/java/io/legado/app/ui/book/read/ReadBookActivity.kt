@@ -279,6 +279,7 @@ class ReadBookActivity : BaseReadBookActivity(),
     private var pageChanged = false
     private val handler by lazy { buildMainHandler() }
     private val screenOffRunnable by lazy { Runnable { keepScreenOn(false) } }
+    private val eyeProtectionRefreshRunnable by lazy { Runnable { refreshEyeProtectionState() } }
     private val executor = ReadBook.executor
     private val upSeekBarThrottle = throttle(200) {
         runOnUiThread {

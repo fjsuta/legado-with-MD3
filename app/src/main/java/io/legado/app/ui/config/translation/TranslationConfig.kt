@@ -23,7 +23,7 @@ object TranslationConfig {
 
     /** 解析后的实例列表(只读) */
     val providerConfigs: List<ProviderConfigData>
-        get() = GSON.fromJsonArray<ProviderConfigData>(providerConfigsJson).orEmpty()
+        get() = GSON.fromJsonArray<ProviderConfigData>(providerConfigsJson).getOrNull() ?: emptyList()
 
     /** 第一个所有 required 字段都填好的实例;若没有则返回 null */
     fun firstValidConfig(): Pair<io.legado.app.model.translation.TranslationProvider, ProviderConfigData>? {

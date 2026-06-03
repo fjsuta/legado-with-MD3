@@ -1,5 +1,6 @@
 package io.legado.app.model.translation.providers
 
+import io.legado.app.help.http.newCallStrResponse
 import io.legado.app.help.http.okHttpClient
 import io.legado.app.help.http.postForm
 import io.legado.app.model.translation.FieldType
