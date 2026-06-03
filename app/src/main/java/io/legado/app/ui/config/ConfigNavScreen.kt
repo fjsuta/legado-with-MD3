@@ -22,8 +22,6 @@ import io.legado.app.ui.widget.components.topbar.TopBarNavigationButton
 fun ConfigNavScreen(
     onBackClick: () -> Unit,
     onNavigateToOther: () -> Unit,
-    onNavigateToRead: () -> Unit,
-    onNavigateToCover: () -> Unit,
     onNavigateToTheme: () -> Unit,
     onNavigateToBackup: () -> Unit,
     onNavigateToDownloadCache: () -> Unit,
@@ -59,14 +57,6 @@ fun ConfigNavScreen(
                     ClickableSettingItem(
                         title = stringResource(R.string.other_setting),
                         onClick = onNavigateToOther
-                    )
-                    ClickableSettingItem(
-                        title = stringResource(R.string.read_config),
-                        onClick = onNavigateToRead
-                    )
-                    ClickableSettingItem(
-                        title = stringResource(R.string.cover_config),
-                        onClick = onNavigateToCover
                     )
                     ClickableSettingItem(
                         title = stringResource(R.string.download_cache_config),

@@ -155,8 +155,6 @@ fun MainActivity.mainEntryProvider(
         ConfigNavScreen(
             onBackClick = { onNavigateBack() },
             onNavigateToOther = { backStack.add(MainRouteSettingsOther) },
-            onNavigateToRead = { backStack.add(MainRouteSettingsRead) },
-            onNavigateToCover = { backStack.add(MainRouteSettingsCover) },
             onNavigateToTheme = { backStack.add(MainRouteSettingsTheme) },
             onNavigateToBackup = { backStack.add(MainRouteSettingsBackup) },
             onNavigateToDownloadCache = { backStack.add(MainRouteSettingsDownloadCache) },
@@ -180,7 +178,9 @@ fun MainActivity.mainEntryProvider(
         ThemeConfigScreen(
             onBackClick = { onNavigateBack() },
             onNavigateToCustomTheme = { backStack.add(MainRouteSettingsCustomTheme) },
-            onNavigateToThemeManage = { backStack.add(MainRouteSettingsThemeManage) }
+            onNavigateToThemeManage = { backStack.add(MainRouteSettingsThemeManage) },
+            onNavigateToRead = { backStack.add(MainRouteSettingsRead) },
+            onNavigateToCover = { backStack.add(MainRouteSettingsCover) }
         )
     }
 

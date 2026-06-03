@@ -121,6 +121,8 @@ fun ThemeConfigScreen(
     onBackClick: () -> Unit,
     onNavigateToCustomTheme: () -> Unit,
     onNavigateToThemeManage: () -> Unit,
+    onNavigateToRead: () -> Unit,
+    onNavigateToCover: () -> Unit,
     viewModel: ThemeConfigViewModel = koinViewModel()
 ) {
     val scrollBehavior = GlassTopAppBarDefaults.defaultScrollBehavior()
@@ -819,6 +821,20 @@ fun ThemeConfigScreen(
                         title = stringResource(R.string.theme_pack),
                         description = stringResource(R.string.theme_pack_s),
                         onClick = onNavigateToThemeManage
+                    )
+                }
+            }
+
+            // Sub-page entries
+            item {
+                SplicedColumnGroup(title = stringResource(R.string.other_setting)) {
+                    ClickableSettingItem(
+                        title = stringResource(R.string.read_config),
+                        onClick = onNavigateToRead
+                    )
+                    ClickableSettingItem(
+                        title = stringResource(R.string.cover_config),
+                        onClick = onNavigateToCover
                     )
                 }
             }
