@@ -9,6 +9,7 @@ import io.legado.app.model.translation.ProviderField
 import io.legado.app.model.translation.ProviderRegistry
 import io.legado.app.model.translation.RateLimiter
 import io.legado.app.model.translation.TranslationProvider
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,6 +18,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.UUID
 
 data class ProviderConfigState(
@@ -95,25 +97,27 @@ class ProviderConfigViewModel(
     /**
      * 测试当前配置。返回 Result 是为了 UI 层通过 isSuccess / exceptionOrNull 提示用户。
      */
-    suspend fun test(): Result<String> = runCatching {
-        val config = currentConfig()
-        val targetLang = TranslationConfig.targetLanguage.ifBlank { "zh" }
-        val showUniversal = provider.showUniversalFields
-        val rateLimit = if (showUniversal) {
-            (config.fields["rateLimit"]?.toIntOrNull() ?: 1).coerceAtLeast(1)
-        } else 1
-        val maxChars = if (showUniversal) {
-            (config.fields["maxChars"]?.toIntOrNull() ?: 1800).coerceAtLeast(100)
-        } else 5000
-        val maxParas = if (showUniversal) {
-            (config.fields["maxParas"]?.toIntOrNull() ?: 8).coerceAtLeast(1)
-        } else 100
+    suspend fun test(): Result<String> = withContext(Dispatchers.IO) {
+        runCatching {
+            val config = currentConfig()
+            val targetLang = TranslationConfig.targetLanguage.ifBlank { "zh" }
+            val showUniversal = provider.showUniversalFields
+            val rateLimit = if (showUniversal) {
+                (config.fields["rateLimit"]?.toIntOrNull() ?: 1).coerceAtLeast(1)
+            } else 1
+            val maxChars = if (showUniversal) {
+                (config.fields["maxChars"]?.toIntOrNull() ?: 1800).coerceAtLeast(100)
+            } else 5000
+            val maxParas = if (showUniversal) {
+                (config.fields["maxParas"]?.toIntOrNull() ?: 8).coerceAtLeast(1)
+            } else 100
 
-        val rateLimiter = RateLimiter(rateLimit)
-        val chunks = ChunkSplitter.split("Hello world", maxChars, maxParas)
-        if (chunks.isEmpty()) throw RuntimeException("Empty text")
-        rateLimiter.acquire()
-        provider.translate(config, chunks.first().text, "", targetLang).getOrThrow()
+            val rateLimiter = RateLimiter(rateLimit)
+            val chunks = ChunkSplitter.split("Hello world", maxChars, maxParas)
+            if (chunks.isEmpty()) throw RuntimeException("Empty text")
+            rateLimiter.acquire()
+            provider.translate(config, chunks.first().text, "", targetLang).getOrThrow()
+        }
     }
 
     fun currentConfig(): ProviderConfigData = ProviderConfigData(
