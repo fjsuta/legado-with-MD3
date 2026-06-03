@@ -214,7 +214,7 @@ class ExportBookService : BaseService(), KoinComponent {
                         if (exportConfig.epubScope.isNullOrBlank()) {
                             exportEpub(exportConfig.path, book)
                             // Also export translation if cache exists
-                            if (hasAnyTranslatedChapter(book, TranslationConfig.llmTargetLanguage)) {
+                            if (hasAnyTranslatedChapter(book, TranslationConfig.targetLanguage)) {
                                 exportEpub(exportConfig.path, book, ContentSource.Translation)
                             }
                         } else {
@@ -226,7 +226,7 @@ class ExportBookService : BaseService(), KoinComponent {
                     } else {
                         exportTxt(exportConfig.path, book)
                         // Also export translation if cache exists
-                        if (hasAnyTranslatedChapter(book, TranslationConfig.llmTargetLanguage)) {
+                        if (hasAnyTranslatedChapter(book, TranslationConfig.targetLanguage)) {
                             val fileDoc = FileDoc.fromDir(exportConfig.path)
                             exportTxt(fileDoc, book, ContentSource.Translation)
                         }
@@ -272,7 +272,7 @@ class ExportBookService : BaseService(), KoinComponent {
     }
 
     private suspend fun exportTxt(fileDoc: FileDoc, book: Book, source: ContentSource) {
-        val targetLanguage = TranslationConfig.llmTargetLanguage
+        val targetLanguage = TranslationConfig.targetLanguage
         val filename = when (source) {
             ContentSource.Original -> book.getExportFileName("txt")
             ContentSource.Translation -> getTranslatedFileName(book.getExportFileName("txt"), targetLanguage)
@@ -378,7 +378,7 @@ class ExportBookService : BaseService(), KoinComponent {
         useReplace: Boolean,
         source: ContentSource
     ): Pair<String, ArrayList<SrcData>?> {
-        val targetLanguage = TranslationConfig.llmTargetLanguage
+        val targetLanguage = TranslationConfig.targetLanguage
         val content = when (source) {
             ContentSource.Original -> BookHelp.getContent(book, chapter)
             ContentSource.Translation -> translationCacheRepository.readTranslation(book, chapter, targetLanguage)
@@ -430,7 +430,7 @@ class ExportBookService : BaseService(), KoinComponent {
     }
 
     private suspend fun exportEpub(fileDoc: FileDoc, book: Book, source: ContentSource) {
-        val targetLanguage = TranslationConfig.llmTargetLanguage
+        val targetLanguage = TranslationConfig.targetLanguage
         val filename = when (source) {
             ContentSource.Original -> book.getExportFileName("epub")
             ContentSource.Translation -> getTranslatedFileName(book.getExportFileName("epub"), targetLanguage)
@@ -614,7 +614,7 @@ class ExportBookService : BaseService(), KoinComponent {
         } else {
             1
         }
-        val targetLanguage = TranslationConfig.llmTargetLanguage
+        val targetLanguage = TranslationConfig.targetLanguage
         var parentSection: TOCReference? = null
         flow {
             appDb.bookChapterDao.getChapterList(book.bookUrl).forEach { chapter ->

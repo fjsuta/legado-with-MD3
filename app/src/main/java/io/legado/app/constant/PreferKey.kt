@@ -323,16 +323,8 @@ object PreferKey {
 
     // Translation
     const val llmTranslateEnabled = "llmTranslateEnabled"
-    const val llmProvider = "llmProvider"
-    const val llmBaseUrl = "llmBaseUrl"
-    const val llmApiKey = "llmApiKey"
-    const val llmModel = "llmModel"
     const val llmTargetLanguage = "llmTargetLanguage"
-    const val llmMaxCharsPerChunk = "llmMaxCharsPerChunk"
-    const val llmConcurrentChunks = "llmConcurrentChunks"
-    const val llmRetryCount = "llmRetryCount"
-    const val llmTemperature = "llmTemperature"
-    const val llmPrompt = "llmPrompt"
+    const val translationProviderConfigs = "translationProviderConfigs"
 
     const val homepageModuleOrder = "homepageModuleOrder"
     const val homepageModuleHidden = "homepageModuleHidden"

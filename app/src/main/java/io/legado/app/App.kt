@@ -131,6 +131,8 @@ class App : Application(), ImageLoaderFactory {
         applyDayNightInit(this)
         registerActivityLifecycleCallbacks(LifecycleHelp)
         defaultSharedPreferences.registerOnSharedPreferenceChangeListener(AppConfig)
+        // 注册所有翻译 provider
+        io.legado.app.model.translation.ProviderRegistry.registerAll()
         Coroutine.async {
             LogUtils.init(this@App)
             LogUtils.d("App", "onCreate")

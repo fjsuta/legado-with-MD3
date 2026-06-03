@@ -43,6 +43,15 @@ data object MainRouteSettingsDownloadCache : MainRoute
 data object MainRouteSettingsTranslation : MainRoute
 
 @Serializable
+data object MainRouteSettingsProviderList : MainRoute
+
+@Serializable
+data class MainRouteSettingsProviderConfig(
+    val providerType: String,
+    val existingId: String? = null
+) : MainRoute
+
+@Serializable
 data object MainRouteImportLocal : MainRoute
 
 @Serializable
@@ -104,6 +113,8 @@ object MainRouteConst {
     const val ROUTE_SETTINGS_LAB_CONFIG = "settings/lab_config"
     const val ROUTE_SETTINGS_DOWNLOAD_CACHE = "settings/download_cache"
     const val ROUTE_SETTINGS_TRANSLATION = "settings/translation"
+    const val ROUTE_SETTINGS_PROVIDER_LIST = "settings/provider_list"
+    const val ROUTE_SETTINGS_PROVIDER_CONFIG = "settings/provider_config"
     const val ROUTE_IMPORT_LOCAL = "import/local"
     const val ROUTE_IMPORT_REMOTE = "import/remote"
     const val ROUTE_CACHE = "cache"

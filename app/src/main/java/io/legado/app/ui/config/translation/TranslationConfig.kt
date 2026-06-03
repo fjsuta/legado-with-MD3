@@ -1,81 +1,69 @@
 package io.legado.app.ui.config.translation
 
 import io.legado.app.constant.PreferKey
-import io.legado.app.domain.model.TranslationConstants
+import io.legado.app.model.translation.ProviderConfigData
 import io.legado.app.ui.config.prefDelegate
+import io.legado.app.utils.GSON
+import io.legado.app.utils.fromJsonArray
+import io.legado.app.utils.postEvent
 
 object TranslationConfig {
+    var enabled by prefDelegate(PreferKey.llmTranslateEnabled, false) {
+        postEvent(PreferKey.llmTranslateEnabled, it)
+    }
+    var targetLanguage by prefDelegate(PreferKey.llmTargetLanguage, "zh") {
+        postEvent(PreferKey.llmTargetLanguage, it)
+    }
 
-    var llmTranslateEnabled by prefDelegate(
-        PreferKey.llmTranslateEnabled,
-        false
-    )
+    /** 翻译服务实例列表(以 JSON 字符串存储) */
+    var providerConfigsJson by prefDelegate(
+        PreferKey.translationProviderConfigs,
+        "[]"
+    ) { postEvent(PreferKey.translationProviderConfigs, it) }
 
-    var llmProvider by prefDelegate(
-        PreferKey.llmProvider,
-        "google"
-    )
+    /** 解析后的实例列表(只读) */
+    val providerConfigs: List<ProviderConfigData>
+        get() = GSON.fromJsonArray<ProviderConfigData>(providerConfigsJson).orEmpty()
 
-    var llmBaseUrl by prefDelegate(
-        PreferKey.llmBaseUrl,
-        ""
-    )
-
-    var llmApiKey by prefDelegate(
-        PreferKey.llmApiKey,
-        ""
-    )
-
-    var llmModel by prefDelegate(
-        PreferKey.llmModel,
-        ""
-    )
-
-    var llmTargetLanguage by prefDelegate(
-        PreferKey.llmTargetLanguage,
-        "zh"
-    )
-
-    var llmMaxCharsPerChunk by prefDelegate(
-        PreferKey.llmMaxCharsPerChunk,
-        10000
-    )
-
-    var llmConcurrentChunks by prefDelegate(
-        PreferKey.llmConcurrentChunks,
-        1
-    )
-
-    var llmRetryCount by prefDelegate(
-        PreferKey.llmRetryCount,
-        2
-    )
-
-    private var storedLlmTemperature by prefDelegate(
-        PreferKey.llmTemperature,
-        TranslationConstants.DEFAULT_TEMPERATURE
-    )
-
-    var llmTemperature: Float
-        get() = storedLlmTemperature.coerceIn(MIN_TEMPERATURE, MAX_TEMPERATURE)
-        set(value) {
-            storedLlmTemperature = value.coerceIn(MIN_TEMPERATURE, MAX_TEMPERATURE)
+    /** 第一个所有 required 字段都填好的实例;若没有则返回 null */
+    fun firstValidConfig(): Pair<io.legado.app.model.translation.TranslationProvider, ProviderConfigData>? {
+        val providers = io.legado.app.model.translation.ProviderRegistry.all()
+        for (cfg in providerConfigs) {
+            val provider = providers.firstOrNull { it.type == cfg.type } ?: continue
+            val required = provider.fields.filter { it.required }.map { it.key } +
+                if (provider.showUniversalFields)
+                    listOf("rateLimit", "maxChars", "maxParas") else emptyList()
+            if (cfg.allRequiredFilled(required)) {
+                return provider to cfg
+            }
         }
+        return null
+    }
 
-    var llmPrompt by prefDelegate(
-        PreferKey.llmPrompt,
-        TranslationConstants.DEFAULT_PROMPT
+    fun writeProviderConfigs(list: List<ProviderConfigData>) {
+        providerConfigsJson = GSON.toJson(list)
+    }
+
+    fun upsertProviderConfig(config: ProviderConfigData) {
+        val list = providerConfigs.toMutableList()
+        val idx = list.indexOfFirst { it.id == config.id }
+        if (idx >= 0) list[idx] = config else list.add(config)
+        writeProviderConfigs(list)
+    }
+
+    fun deleteProviderConfig(id: String) {
+        writeProviderConfigs(providerConfigs.filter { it.id != id })
+    }
+
+    val targetLanguages = listOf(
+        "zh" to "简体中文",
+        "en" to "English",
+        "ja" to "日本語",
+        "ko" to "한국어",
+        "fr" to "Français",
+        "de" to "Deutsch",
+        "es" to "Español",
+        "ru" to "Русский",
+        "ar" to "العربية"
     )
-
-    // Delegate constants to domain layer
-    const val PROVIDER_OPENAI = TranslationConstants.PROVIDER_OPENAI
-    const val PROVIDER_GOOGLE = TranslationConstants.PROVIDER_GOOGLE
-    val providerDisplayNames get() = TranslationConstants.providerDisplayNames
-    val providerValues get() = TranslationConstants.providerValues
-    val targetLanguages get() = TranslationConstants.targetLanguages
-    const val MIN_TEMPERATURE = TranslationConstants.MIN_TEMPERATURE
-    const val MAX_TEMPERATURE = TranslationConstants.MAX_TEMPERATURE
-    const val DEFAULT_TEMPERATURE = TranslationConstants.DEFAULT_TEMPERATURE
-    const val DEFAULT_PROMPT = TranslationConstants.DEFAULT_PROMPT
-    const val OUTPUT_FORMAT = TranslationConstants.OUTPUT_FORMAT
 }

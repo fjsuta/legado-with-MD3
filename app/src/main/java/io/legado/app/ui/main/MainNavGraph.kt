@@ -43,6 +43,8 @@ import io.legado.app.ui.config.readConfig.ReadConfigScreen
 import io.legado.app.ui.config.themeConfig.ThemeConfigScreen
 import io.legado.app.ui.config.themeManage.ThemeManageScreen
 import io.legado.app.ui.config.labConfig.LabConfigScreen
+import io.legado.app.ui.config.translation.ProviderConfigScreen
+import io.legado.app.ui.config.translation.ProviderListScreen
 import io.legado.app.ui.config.translation.TranslationConfigScreen
 import io.legado.app.ui.rss.article.MainRouteRssSort
 import io.legado.app.ui.rss.article.RssSortRouteScreen
@@ -193,7 +195,27 @@ fun MainActivity.mainEntryProvider(
     }
 
     entry<MainRouteSettingsTranslation> {
-        TranslationConfigScreen(onBackClick = { onNavigateBack() })
+        TranslationConfigScreen(
+            onBackClick = { onNavigateBack() },
+            onNavigateToProviderList = { backStack.add(MainRouteSettingsProviderList) }
+        )
+    }
+
+    entry<MainRouteSettingsProviderList> {
+        ProviderListScreen(
+            onBackClick = { onNavigateBack() },
+            onNavigateToProvider = { type, id ->
+                backStack.add(MainRouteSettingsProviderConfig(type, id))
+            }
+        )
+    }
+
+    entry<MainRouteSettingsProviderConfig> { key ->
+        ProviderConfigScreen(
+            providerType = key.providerType,
+            existingId = key.existingId,
+            onBackClick = { onNavigateBack() }
+        )
     }
 
     entry<MainRouteSettingsLabConfig> {
