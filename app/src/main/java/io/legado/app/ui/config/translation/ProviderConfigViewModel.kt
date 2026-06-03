@@ -53,7 +53,7 @@ class ProviderConfigViewModel(
     fun resetToDefault() {
         _state.update { s ->
             val defaults = provider.fields.associate { it.key to it.default.orEmpty() } +
-                if (provider.showUniversalFields) UNIVERSAL_FIELDS.associate { it.key to it.default.orEmpty() }
+                if (provider.showUniversalFields) DEFAULT_UNIVERSAL_FIELDS.associate { it.key to it.default.orEmpty() }
                 else emptyMap()
             s.copy(
                 customName = "${provider.displayName} ${numberedCount()}",

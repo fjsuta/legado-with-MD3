@@ -14,7 +14,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -27,6 +26,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
 import io.legado.app.R
 import io.legado.app.model.translation.FieldType
 import io.legado.app.model.translation.ProviderField
@@ -45,9 +46,11 @@ fun ProviderConfigScreen(
     providerType: String,
     existingId: String?,
     onBackClick: () -> Unit,
-    viewModel: ProviderConfigViewModel = viewModel {
-        ProviderConfigViewModel(providerType, existingId)
-    }
+    viewModel: ProviderConfigViewModel = viewModel(
+        factory = viewModelFactory {
+            initializer { ProviderConfigViewModel(providerType, existingId) }
+        }
+    )
 ) {
     val state by viewModel.state.collectAsState()
     val context = LocalContext.current
