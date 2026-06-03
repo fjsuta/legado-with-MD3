@@ -1,6 +1,7 @@
 package io.legado.app.model.translation.providers
 
 import io.legado.app.help.http.addHeaders
+import io.legado.app.help.http.newCallStrResponse
 import io.legado.app.help.http.okHttpClient
 import io.legado.app.help.http.postJson
 import io.legado.app.model.translation.FieldType

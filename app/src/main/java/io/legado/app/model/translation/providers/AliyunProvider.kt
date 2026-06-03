@@ -89,7 +89,7 @@ object AliyunProvider : TranslationProvider {
         val parsed = GSON.fromJson(response.body, Resp::class.java)
             ?: throw RuntimeException("Empty response")
         parsed.data?.translated
-            ?: parsed.message?.let { throw RuntimeException("阿里云错误 $it: ${parsed.code.orEmpty()}") }
+            ?: parsed.message?.let { throw RuntimeException("阿里云错误 $it: ${parsed.code.getOrNull() ?: ""}") }
             ?: throw RuntimeException("Empty translation result")
     }
 

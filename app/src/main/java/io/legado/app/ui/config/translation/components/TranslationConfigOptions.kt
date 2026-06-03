@@ -60,7 +60,7 @@ private fun TranslationConfigBody(
         DropdownListSettingItem(
             title = stringResource(R.string.target_language),
             selectedValue = state.targetLanguage,
-            displayEntries = state.targetLanguageDisplayEntries.toTypedArray(),
+            displayEntries = state.targetLanguageDisplayEntries,
             entryValues = state.targetLanguageValues.toTypedArray(),
             onValueChange = onTargetLanguageChange
         )

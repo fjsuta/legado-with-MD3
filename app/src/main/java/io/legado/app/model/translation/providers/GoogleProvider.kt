@@ -42,7 +42,7 @@ object GoogleProvider : TranslationProvider {
                 throw RuntimeException("HTTP ${response.code()}: ${response.message()}")
             }
             val root = JsonParser.parseString(response.body)
-            if (!root.isJsonArray) throw RuntimeException("Unexpected response: ${response.body.take(200)}")
+            if (!root.isJsonArray) throw RuntimeException("Unexpected response: ${response.body?.take(200) ?: ""}")
             val outer = root.asJsonArray
             if (outer.size() == 0 || !outer[0].isJsonArray) {
                 throw RuntimeException("Empty translation result")

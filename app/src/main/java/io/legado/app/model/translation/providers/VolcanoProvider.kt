@@ -97,7 +97,7 @@ object VolcanoProvider : TranslationProvider {
                 postJson(body)
             }
             if (!response.isSuccessful()) {
-                throw RuntimeException("HTTP ${response.code()}: ${response.body.take(200)}")
+                throw RuntimeException("HTTP ${response.code()}: ${response.body?.take(200) ?: ""}")
             }
             val parsed = GSON.fromJson(response.body, VolcanoResp::class.java)
                 ?: throw RuntimeException("Empty response body")
