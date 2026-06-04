@@ -12,7 +12,7 @@ import java.util.Calendar
  * 提供色温（暖色）转 ColorMatrix 以及覆盖层颜色计算
  *
  * 激活条件：
- * Lab 总开关开启 && 实验室护眼模式开启 && 主题护眼模式开启 &&
+ * Lab 总开关开启 && 主题护眼模式开启 &&
  * (未开启定时 OR 当前时间在定时区间内)
  */
 object EyeProtectionHelper {
