@@ -220,8 +220,7 @@ fun MainActivity.mainEntryProvider(
 
     entry<MainRouteSettingsLabConfig> {
         LabConfigScreen(
-            onBackClick = { onNavigateBack() },
-            onNavigateToTranslation = { backStack.add(MainRouteSettingsTranslation) }
+            onBackClick = { onNavigateBack() }
         )
     }
 

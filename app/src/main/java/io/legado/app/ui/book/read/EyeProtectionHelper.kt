@@ -55,7 +55,6 @@ object EyeProtectionHelper {
      */
     fun isActive(): Boolean {
         if (!LabConfig.labEnabled) return false
-        if (!LabConfig.eyeProtection) return false
         if (!ThemeConfig.eyeProtectionEnabled) return false
         return isInSchedule()
     }
