@@ -114,6 +114,7 @@ object MainRouteConst {
     const val ROUTE_SETTINGS_BACKUP = "settings/backup"
     const val ROUTE_SETTINGS_CUSTOM_THEME = "settings/custom_theme"
     const val ROUTE_SETTINGS_LAB_CONFIG = "settings/lab_config"
+    const val ROUTE_SETTINGS_AI_SERVICE_CONFIG = "settings/ai_service_config"
     const val ROUTE_SETTINGS_DOWNLOAD_CACHE = "settings/download_cache"
     const val ROUTE_SETTINGS_TRANSLATION = "settings/translation"
     const val ROUTE_SETTINGS_PROVIDER_LIST = "settings/provider_list"
