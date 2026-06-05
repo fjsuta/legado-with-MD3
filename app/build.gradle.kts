@@ -115,6 +115,17 @@ android {
                 "cronet-proguard-rules.pro"
             )
         }
+        create("beta") {
+            initWith(getByName("release"))
+            if (project.hasProperty("RELEASE_STORE_FILE")) {
+                signingConfig = signingConfigs.getByName("myConfig")
+            }
+            manifestPlaceholders["app_name"] = "@string/app_name"
+            versionNameSuffix = "-Beta"
+            isMinifyEnabled = false
+            isShrinkResources = false
+            matchingFallbacks += listOf("release")
+        }
     }
 
     splits {
