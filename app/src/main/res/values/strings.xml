@@ -173,6 +173,7 @@
     <string name="backup_permission">Backup needs storage permission</string>
     <string name="restore_permission">Restore needs storage permission</string>
     <string name="ok">OK</string>
+    <string name="save">Save</string>
     <string name="cancel">Cancel</string>
     <string name="backup_confirmation">Backup confirmation</string>
     <string name="backup_message">The new backup files will replace the original.\n Backup folder: YueDu</string>
