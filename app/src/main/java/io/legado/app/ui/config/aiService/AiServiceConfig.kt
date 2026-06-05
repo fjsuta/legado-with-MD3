@@ -143,5 +143,5 @@ object AiServiceConfig {
             AiModel(modelId = "nemotron-3-ultra:cloud", displayName = "Nemotron 3 Ultra"),
             AiModel(modelId = "deepseek-v4-pro:cloud", displayName = "DeepSeek V4 Pro")
         )
-    }
+    )
 }
