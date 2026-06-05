@@ -42,6 +42,7 @@ import io.legado.app.ui.config.otherConfig.OtherConfigScreen
 import io.legado.app.ui.config.readConfig.ReadConfigScreen
 import io.legado.app.ui.config.themeConfig.ThemeConfigScreen
 import io.legado.app.ui.config.themeManage.ThemeManageScreen
+import io.legado.app.ui.config.aiService.AiServiceConfigScreen
 import io.legado.app.ui.config.labConfig.LabConfigScreen
 import io.legado.app.ui.config.translation.ProviderConfigScreen
 import io.legado.app.ui.config.translation.ProviderListScreen
@@ -220,6 +221,13 @@ fun MainActivity.mainEntryProvider(
 
     entry<MainRouteSettingsLabConfig> {
         LabConfigScreen(
+            onBackClick = { onNavigateBack() },
+            onNavigateToAiServiceConfig = { backStack.add(MainRouteSettingsAiServiceConfig) }
+        )
+    }
+
+    entry<MainRouteSettingsAiServiceConfig> {
+        AiServiceConfigScreen(
             onBackClick = { onNavigateBack() }
         )
     }

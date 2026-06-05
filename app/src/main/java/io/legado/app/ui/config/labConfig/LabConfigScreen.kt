@@ -14,11 +14,16 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import io.legado.app.R
+import io.legado.app.model.ai.AiSearchMode
+import io.legado.app.model.ai.AiServiceMode
+import io.legado.app.ui.config.aiService.AiServiceConfig
 import io.legado.app.ui.theme.LegadoTheme
 import io.legado.app.ui.theme.adaptiveContentPadding
 import io.legado.app.ui.widget.components.AppScaffold
 import io.legado.app.ui.widget.components.SplicedColumnGroup
+import io.legado.app.ui.widget.components.settingItem.ClickableSettingItem
 import io.legado.app.ui.widget.components.settingItem.SwitchSettingItem
+import io.legado.app.ui.widget.components.settingItem.ToggleSettingItem
 import io.legado.app.ui.widget.components.topbar.GlassMediumFlexibleTopAppBar
 import io.legado.app.ui.widget.components.topbar.GlassTopAppBarDefaults
 import io.legado.app.ui.widget.components.topbar.TopBarNavigationButton
@@ -26,7 +31,8 @@ import io.legado.app.ui.widget.components.topbar.TopBarNavigationButton
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LabConfigScreen(
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    onNavigateToAiServiceConfig: () -> Unit
 ) {
     val scrollBehavior = GlassTopAppBarDefaults.defaultScrollBehavior()
 
@@ -78,6 +84,44 @@ fun LabConfigScreen(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(horizontal = 16.dp, vertical = 4.dp)
+                            )
+                        }
+                    }
+                }
+
+                AnimatedVisibility(visible = LabConfig.labEnabled) {
+                    SplicedColumnGroup(title = stringResource(R.string.lab_ai_service)) {
+                        SwitchSettingItem(
+                            title = stringResource(R.string.lab_ai_service_title),
+                            description = stringResource(R.string.lab_ai_service_summary),
+                            checked = AiServiceConfig.enabled,
+                            onCheckedChange = { AiServiceConfig.enabled = it }
+                        )
+
+                        AnimatedVisibility(visible = AiServiceConfig.enabled) {
+                            ToggleSettingItem(
+                                title = stringResource(R.string.lab_search_mode),
+                                options = listOf(
+                                    AiSearchMode.Traditional.name to AiSearchMode.Traditional.displayName,
+                                    AiSearchMode.Ai.name to AiSearchMode.Ai.displayName
+                                ),
+                                selected = AiServiceConfig.searchMode,
+                                onSelectedChange = { AiServiceConfig.searchMode = it }
+                            )
+
+                            ToggleSettingItem(
+                                title = stringResource(R.string.lab_service_mode),
+                                options = listOf(
+                                    AiServiceMode.Builtin.name to AiServiceMode.Builtin.displayName,
+                                    AiServiceMode.Custom.name to AiServiceMode.Custom.displayName
+                                ),
+                                selected = AiServiceConfig.serviceMode,
+                                onSelectedChange = { AiServiceConfig.serviceMode = it }
+                            )
+
+                            ClickableSettingItem(
+                                title = stringResource(R.string.lab_ai_config),
+                                onClick = onNavigateToAiServiceConfig
                             )
                         }
                     }

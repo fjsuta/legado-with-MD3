@@ -342,4 +342,14 @@ object PreferKey {
     const val eyeProtectionSchedule = "eyeProtectionSchedule"
     const val eyeProtectionStartTime = "eyeProtectionStartTime"
     const val eyeProtectionEndTime = "eyeProtectionEndTime"
+
+    // AI Service
+    const val aiServiceEnabled = "aiServiceEnabled"
+    const val aiServiceMode = "aiServiceMode"
+    const val aiSearchMode = "aiSearchMode"
+    const val aiBuiltinProvider = "aiBuiltinProvider"
+    const val aiBuiltinModelId = "aiBuiltinModelId"
+    const val aiCustomProviders = "aiCustomProviders"
+    const val aiActiveCustomProviderId = "aiActiveCustomProviderId"
+    const val aiActiveModelId = "aiActiveModelId"
 }

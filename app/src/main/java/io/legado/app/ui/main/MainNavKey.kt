@@ -37,6 +37,9 @@ data object MainRouteSettingsThemeManage : MainRoute
 data object MainRouteSettingsLabConfig : MainRoute
 
 @Serializable
+data object MainRouteSettingsAiServiceConfig : MainRoute
+
+@Serializable
 data object MainRouteSettingsDownloadCache : MainRoute
 
 @Serializable

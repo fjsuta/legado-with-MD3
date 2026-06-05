@@ -1826,6 +1826,30 @@
     <string name="lab_eye_protection_summary">Apply warm color tint to comic and novel readers to reduce eye strain</string>
     <string name="lab_eye_protection_hint">You can adjust eye protection settings in Theme → Appearance</string>
 
+    <!-- AI Service -->
+    <string name="lab_ai_service">AI Service</string>
+    <string name="lab_ai_service_title">Enable AI Service</string>
+    <string name="lab_ai_service_summary">Enable AI-powered features including book recommendation and search</string>
+    <string name="lab_search_mode">Search Mode</string>
+    <string name="lab_service_mode">Service Mode</string>
+    <string name="lab_ai_config">Configure AI Service</string>
+    <string name="lab_ai_provider">AI Provider</string>
+    <string name="lab_ai_model">AI Model</string>
+    <string name="lab_ai_custom_providers">Custom Providers</string>
+    <string name="lab_ai_no_providers">No custom providers configured</string>
+    <string name="lab_ai_models">Models</string>
+    <string name="add_provider">Add Provider</string>
+    <string name="edit_provider">Edit Provider</string>
+    <string name="edit_model">Edit Model</string>
+    <string name="api_mode">API Mode</string>
+    <string name="api_key">API Key</string>
+    <string name="api_host">API Host</string>
+    <string name="api_path">API Path</string>
+    <string name="model_id">Model ID</string>
+    <string name="display_name">Display Name</string>
+    <string name="context_window">Context Window</string>
+    <string name="max_tokens">Max Output Tokens</string>
+
     <!-- Eye Protection -->
     <string name="eye_protection">Eye Protection</string>
     <string name="eye_protection_enabled">Enable Eye Protection</string>
