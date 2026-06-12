@@ -1850,6 +1850,8 @@
     <string name="display_name">Display Name</string>
     <string name="context_window">Context Window</string>
     <string name="max_tokens">Max Output Tokens</string>
+    <string name="models">Models</string>
+    <string name="optional">Optional</string>
 
     <!-- Eye Protection -->
     <string name="eye_protection">Eye Protection</string>
